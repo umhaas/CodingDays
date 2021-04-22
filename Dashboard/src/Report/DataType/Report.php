@@ -9,10 +9,7 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\DataType;
 
-use DateTimeImmutable;
-use DateTimeInterface;
-use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
-use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
@@ -21,13 +18,13 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class Report
 {
-    /** @var Database */
-    private $db;
+    /** @var QueryBuilderFactoryInterface */
+    private $qbfi;
 
     public function __construct(
-        DatabaseInterface $db
+        QueryBuilderFactoryInterface $qbfi
     ) {
-        $this->db = $db;
+        $this->qbfi = $qbfi;
     }
 
     /**
@@ -35,7 +32,14 @@ final class Report
      */
     public function orders(): string
     {
-        return (string) $this->db->getOne("SELECT COUNT(*) FROM oxorder WHERE oxorderdate >= ?",[date("Y-m-d")]);
+        $qb = $this->qbfi->create();
+        $data = $qb->select("COUNT(*)")
+            ->from("oxorder")
+            ->where("oxorderdate >= :date")
+            ->setParameter("date", date("Y-m-d"))
+            ->execute();
+
+        return $data->fetchColumn(0);
     }
 
     /**
@@ -43,6 +47,14 @@ final class Report
      */
     public function newOrders(): string
     {
-        return (string) $this->db->getOne("SELECT COUNT(*) FROM oxorder WHERE oxfolder = 'ORDERFOLDER_NEW' AND oxorderdate >= ?",[date("Y-m-d")]);
+        $qb = $this->qbfi->create();
+        $data = $qb->select("COUNT(*)")
+            ->from("oxorder")
+            ->where("oxorderdate >= :date")
+            ->andWhere("oxfolder = 'ORDERFOLDER_NEW'")
+            ->setParameter("date", date("Y-m-d"))
+            ->execute();
+
+        return $data->fetchColumn(0);
     }
 }
