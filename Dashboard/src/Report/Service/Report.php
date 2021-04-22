@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\Service;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use \OxidEsales\GraphQL\Base\Exception\NotFound;
 use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
 use CodingDays\Dashboard\Report\Exception\ReportNotFound;
@@ -16,13 +18,8 @@ use CodingDays\Dashboard\Report\Infrastructure\ReportRepository;
 
 final class Report
 {
-    /** @var ReportRepository */
-    private $Repository;
-
-    public function __construct(
-        ReportRepository $Repository
-    ) {
-        $this->Repository = $Repository;
+    public function __construct()
+    {
     }
 
     /**
@@ -30,12 +27,10 @@ final class Report
      */
     public function report(?string $date): ReportDataType
     {
-        try {
-            $report = $this->Repository->report($date);
-        } catch (NotFound $e) {
-            throw ReportNotFound::byId($date);
-        }
+        $qbfi = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class);
 
-        return $report;
+        return new ReportDataType($qbfi);
     }
 }

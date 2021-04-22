@@ -23,7 +23,6 @@ final class Report
     public function __construct(
         ReportService $service
     ) {
-        $container    = ContainerFactory::getInstance()->getContainer();
         $this->Service = $service;
     }
 
