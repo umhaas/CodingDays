@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Revenue\Service;
 
-
-use \DateTimeInterface;
+use GraphQL\Error\Error;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use CodingDays\Dashboard\Revenue\DataType\Revenue as RevenueDataType;
@@ -18,17 +17,24 @@ final class Revenue
      */
     public function __construct() { }
 
+    /**
+     * @param string|null $from
+     * @param string|null $to
+     *
+     * @return RevenueDataType
+     * @throws Error
+     */
     public function revenue(?string $from, ?string $to): RevenueDataType
     {
-        $qbfi = ContainerFactory::getInstance()
+        $queryBuilderFactory = ContainerFactory::getInstance()
             ->getContainer()
             ->get(QueryBuilderFactoryInterface::class);
 
-        $datefilter = ($from || $to ? new DateFilter(null, [
+        $dateFilter = ($from || $to ? new DateFilter(null, [
             date_create($from ?? date("Y-m-d")),
             date_create($to ?? date("Y-m-d 23:59:59"))
         ]) : null);
 
-        return new RevenueDataType($qbfi, $datefilter);
+        return new RevenueDataType($queryBuilderFactory, $dateFilter);
     }
 }
