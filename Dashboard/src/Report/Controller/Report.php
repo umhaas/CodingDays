@@ -6,8 +6,10 @@ namespace CodingDays\Dashboard\Report\Controller;
 
 use Doctrine\DBAL\Exception;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use CodingDays\Dashboard\Report\Service\Report as ReportService;
+use TheCodingMachine\GraphQLite\Annotations\Right;
 
 final class Report
 {
@@ -27,6 +29,9 @@ final class Report
 
     /**
      * @Query()
+     * @Logged()
+     * @Right("SEE_REPORTS")
+     *
      * @param DateFilter $dateBetween
      *
      * @return int
