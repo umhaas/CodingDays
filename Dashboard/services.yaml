@@ -12,3 +12,6 @@ services:
     CodingDays\Dashboard\Shared\Service\NamespaceMapper:
         class: CodingDays\Dashboard\Shared\Service\NamespaceMapper
         tags: ['graphql_namespace_mapper']
+    CodingDays\Dashboard\Shared\Service\PermissionProvider:
+        class: CodingDays\Dashboard\Shared\Service\PermissionProvider
+        tags: [ 'graphql_permission_provider' ]
