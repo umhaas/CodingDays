@@ -44,6 +44,7 @@ final class Revenue
      * min order value
      *
      * @Field
+     * @throws Exception
      */
     public function min(): string
     {
