@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Revenue\DataType;
 
+use CodingDays\Dashboard\Revenue\Infrastructure\Revenue as InfrastructureRevenue;
 use Doctrine\DBAL\Exception;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use TheCodingMachine\GraphQLite\Annotations\Field;
@@ -19,6 +21,7 @@ final class Revenue
     /** @var QueryBuilderFactoryInterface */
     private QueryBuilderFactoryInterface $queryBuilderFactory;
     private ?DateFilter                  $dateFilter;
+    private InfrastructureRevenue        $revenueRepository;
 
     /**
      * Revenue constructor.
@@ -32,30 +35,19 @@ final class Revenue
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->dateFilter = $dateFilter;
+
+        $container = ContainerFactory::getInstance();
+        $this->revenueRepository = $container->getContainer()->get(InfrastructureRevenue::class);
     }
 
     /**
      * min order value
      *
      * @Field
-     * @throws Exception
      */
     public function min(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("MIN(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne();
+       return $this->revenueRepository->min($this->dateFilter);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CodingDays\Dashboard\Revenue\Controller;
 
 use CodingDays\Dashboard\Revenue\DataType\Revenue as RevenueDataType;
+use GraphQL\Error\Error;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use CodingDays\Dashboard\Revenue\Service\Revenue as RevenueService;
 
@@ -30,6 +31,7 @@ final class Revenue
      * @param string|null $to
      *
      * @return RevenueDataType
+     * @throws Error
      */
     public function revenue(?string $from = null, ?string $to = null): RevenueDataType
     {
