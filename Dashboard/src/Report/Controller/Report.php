@@ -30,7 +30,6 @@ final class Report
     /**
      * @Query()
      * @Logged()
-     * @Right("SEE_REPORTS")
      *
      * @param DateFilter $dateBetween
      *
