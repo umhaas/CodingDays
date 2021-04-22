@@ -148,4 +148,47 @@ final class Report
 
         return $data->fetchOne() ?? "0";
     }
+    
+    /**
+ * @Field
+ */
+public function orderCanceled(): string
+{
+    $qb = $this->qbfi->create();
+    $data = $qb->select("COUNT(*)")
+        ->from("oxorder")
+        ->where("oxorderdate >= :date")
+        ->andWhere("oxstorno = 1")
+        ->setParameter("date", date("Y-m-d"))
+        ->execute();
+    return $data->fetchOne() ?? "0";
+}
+/**
+ * @Field
+ */
+public function orderSum(): string
+{
+    $qb = $this->qbfi->create();
+    $data = $qb->select("SUM(OXTOTALORDERSUM)")
+        ->from("oxorder")
+        ->where("oxorderdate >= :date")
+        ->andWhere("oxstorno = 0")
+        ->setParameter("date", date("Y-m-d"))
+        ->execute();
+    return $data->fetchOne() ?? "0";
+}
+/**
+ * @Field
+ */
+public function orderSumCanceled(): string
+{
+    $qb = $this->qbfi->create();
+    $data = $qb->select("SUM(OXTOTALORDERSUM)")
+        ->from("oxorder")
+        ->where("oxorderdate >= :date")
+        ->andWhere("oxstorno = 1")
+        ->setParameter("date", date("Y-m-d"))
+        ->execute();
+    return $data->fetchOne() ?? "0";
+}
 }
