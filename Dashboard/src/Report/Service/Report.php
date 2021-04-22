@@ -1,25 +1,30 @@
 <?php
 
-/**
- * Copyright © __Vender__. All rights reserved.
- * See LICENSE file for license details.
- */
-
 declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\Service;
 
+use CodingDays\Dashboard\Report\Infrastructure\ReportRepository;
+use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use \OxidEsales\GraphQL\Base\Exception\NotFound;
 use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
 use CodingDays\Dashboard\Report\Exception\ReportNotFound;
-use CodingDays\Dashboard\Report\Infrastructure\ReportRepository;
+use OxidEsales\GraphQL\Base\DataType\DateFilter;
 
 final class Report
 {
-    public function __construct()
-    {
+    private ReportRepository $reportRepository;
+
+    /**
+     * Report constructor.
+     *
+     * @param ReportRepository $reportRepository
+     */
+    public function __construct(
+        ReportRepository $reportRepository
+    ) {
+        $this->reportRepository = $reportRepository;
     }
 
     /**
@@ -29,8 +34,20 @@ final class Report
     {
         $qbfi = ContainerFactory::getInstance()
             ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
+            ->get(QueryBuilderFactoryInterface::class)
+        ;
 
         return new ReportDataType($qbfi);
+    }
+
+    /**
+     * @param DateFilter $dateBetween
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function getReportCountByDateDiff(DateFilter $dateBetween): int
+    {
+        return $this->reportRepository->getReportCountByDateDiff($dateBetween);
     }
 }

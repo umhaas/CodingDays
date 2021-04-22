@@ -1,36 +1,39 @@
 <?php
 
-/**
- * Copyright © __Vender__. All rights reserved.
- * See LICENSE file for license details.
- */
-
 declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\Controller;
 
-
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use Doctrine\DBAL\Exception;
+use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use TheCodingMachine\GraphQLite\Annotations\Query;
-use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
 use CodingDays\Dashboard\Report\Service\Report as ReportService;
 
 final class Report
 {
     /** @var ReportService */
-    private $Service;
+    private ReportService $service;
 
+    /**
+     * Report constructor.
+     *
+     * @param ReportService $service
+     */
     public function __construct(
         ReportService $service
     ) {
-        $this->Service = $service;
+        $this->service = $service;
     }
 
     /**
      * @Query()
+     * @param DateFilter $dateBetween
+     *
+     * @return int
+     * @throws Exception
      */
-    public function report(?string $date): ReportDataType
+    public function reportCountByDateDiff(DateFilter $dateBetween): int
     {
-        return $this->Service->report($date);
+        return $this->service->getReportCountByDateDiff($dateBetween);
     }
 }

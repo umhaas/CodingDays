@@ -1,14 +1,10 @@
 <?php
 
-/**
- * Copyright © __Vender__. All rights reserved.
- * See LICENSE file for license details.
- */
-
 declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\DataType;
 
+use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -29,6 +25,7 @@ final class Report
 
     /**
      * @Field
+     * @throws Exception
      */
     public function orders(): string
     {
@@ -39,11 +36,12 @@ final class Report
             ->setParameter("date", date("Y-m-d"))
             ->execute();
 
-        return $data->fetchColumn(0);
+        return $data->fetchOne();
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function newOrders(): string
     {
@@ -55,6 +53,6 @@ final class Report
             ->setParameter("date", date("Y-m-d"))
             ->execute();
 
-        return $data->fetchColumn(0);
+        return $data->fetchOne();
     }
 }

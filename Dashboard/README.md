@@ -17,7 +17,21 @@ activate the module.
 
 ### How to use
 
-TBD
+OrderCount by Date Diff
+
+Query:
+
+    query {
+        reportCountByDateDiff(
+          dateBetween: {
+            between:[
+              "2021-04-10",
+              "2021-04-22 17:00:00"
+            ]
+          }
+        )
+    }
+
 
 ## Testing
 
