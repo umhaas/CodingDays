@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
@@ -15,12 +15,12 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 final class Report
 {
     /** @var QueryBuilderFactoryInterface */
-    private $qbfi;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
 
     public function __construct(
-        QueryBuilderFactoryInterface $qbfi
+        QueryBuilderFactoryInterface $queryBuilderFactory
     ) {
-        $this->qbfi = $qbfi;
+        $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
     /**
@@ -29,12 +29,13 @@ final class Report
      */
     public function orders(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("COUNT(*)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne();
     }
@@ -45,150 +46,171 @@ final class Report
      */
     public function newOrders(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("COUNT(*)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->andWhere("oxfolder = 'ORDERFOLDER_NEW'")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne();
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function valueMin(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("MIN(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne();
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function valueAvg(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("AVG(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne();
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function valueMax(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("MAX(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne();
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function revenue(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->andWhere("oxfolder = 'ORDERFOLDER_NEW'")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne() ?? "0";
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function revenuePaid(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->andWhere("oxpaid != '0000-00-00 00:00:00'")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne() ?? "0";
     }
 
     /**
      * @Field
+     * @throws Exception
      */
     public function revenueUnpaid(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $data = $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxorderdate >= :date")
             ->andWhere("oxpaid = '0000-00-00 00:00:00'")
             ->setParameter("date", date("Y-m-d"))
-            ->execute();
+            ->execute()
+        ;
 
         return $data->fetchOne() ?? "0";
     }
-    
+
     /**
- * @Field
- */
-public function orderCanceled(): string
-{
-    $qb = $this->qbfi->create();
-    $data = $qb->select("COUNT(*)")
-        ->from("oxorder")
-        ->where("oxorderdate >= :date")
-        ->andWhere("oxstorno = 1")
-        ->setParameter("date", date("Y-m-d"))
-        ->execute();
-    return $data->fetchOne() ?? "0";
-}
-/**
- * @Field
- */
-public function orderSum(): string
-{
-    $qb = $this->qbfi->create();
-    $data = $qb->select("SUM(OXTOTALORDERSUM)")
-        ->from("oxorder")
-        ->where("oxorderdate >= :date")
-        ->andWhere("oxstorno = 0")
-        ->setParameter("date", date("Y-m-d"))
-        ->execute();
-    return $data->fetchOne() ?? "0";
-}
-/**
- * @Field
- */
-public function orderSumCanceled(): string
-{
-    $qb = $this->qbfi->create();
-    $data = $qb->select("SUM(OXTOTALORDERSUM)")
-        ->from("oxorder")
-        ->where("oxorderdate >= :date")
-        ->andWhere("oxstorno = 1")
-        ->setParameter("date", date("Y-m-d"))
-        ->execute();
-    return $data->fetchOne() ?? "0";
-}
+     * @Field
+     * @throws Exception
+     */
+    public function orderCanceled(): string
+    {
+        $qb = $this->queryBuilderFactory->create();
+        $data = $qb->select("COUNT(*)")
+            ->from("oxorder")
+            ->where("oxorderdate >= :date")
+            ->andWhere("oxstorno = 1")
+            ->setParameter("date", date("Y-m-d"))
+            ->execute()
+        ;
+        return $data->fetchOne() ?? "0";
+    }
+
+    /**
+     * @Field
+     * @throws Exception
+     */
+    public function orderSum(): string
+    {
+        $qb = $this->queryBuilderFactory->create();
+        $data = $qb->select("SUM(OXTOTALORDERSUM)")
+            ->from("oxorder")
+            ->where("oxorderdate >= :date")
+            ->andWhere("oxstorno = 0")
+            ->setParameter("date", date("Y-m-d"))
+            ->execute()
+        ;
+        return $data->fetchOne() ?? "0";
+    }
+
+    /**
+     * @Field
+     * @throws Exception
+     */
+    public function orderSumCanceled(): string
+    {
+        $qb = $this->queryBuilderFactory->create();
+        $data = $qb->select("SUM(OXTOTALORDERSUM)")
+            ->from("oxorder")
+            ->where("oxorderdate >= :date")
+            ->andWhere("oxstorno = 1")
+            ->setParameter("date", date("Y-m-d"))
+            ->execute()
+        ;
+        return $data->fetchOne() ?? "0";
+    }
 }
