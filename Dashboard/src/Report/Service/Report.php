@@ -9,7 +9,6 @@ use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
-use CodingDays\Dashboard\Report\Exception\ReportNotFound;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 
 final class Report
@@ -27,9 +26,6 @@ final class Report
         $this->reportRepository = $reportRepository;
     }
 
-    /**
-     * @throws ReportNotFound
-     */
     public function report(?string $date): ReportDataType
     {
         $qbfi = ContainerFactory::getInstance()
