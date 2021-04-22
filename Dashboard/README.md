@@ -20,6 +20,19 @@ activate the module.
 OrderCount by Date Diff
 
 Query:
+    Authentication:
+
+    query {
+        token (
+        username: "usermail",
+        password: "password"
+        )
+    }
+
+Set Header from response
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
 
     query {
         reportCountByDateDiff(
