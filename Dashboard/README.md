@@ -7,13 +7,23 @@
 This assumes you have the OXID eShop up and running and installed and activated the `oxid-esales/graphql-base` module.
 
 ### Install
-
-```bash
-$ composer require vt/g-q-lreports
+root composer.json ergänzen:
 ```
-
-After requiring the module, you need to head over to the OXID eShop admin and
-activate the module.
+"autoload": {
+  "psr-4": {
+    "CodingDays\\Dashboard\\": "./source/modules/CodingDays/Dashboard/src"
+  }
+},
+```
+dann per SSH:
+```bash
+$ composer dump-autoload
+$ cd source/modules/composer require vt/g-q-lreports
+$ git clone https://github.com/CodeCommerce/CodingDays.git
+$ cd ../../
+$ ./vendor/bin/oe-console oe:module:install-configuration source/modules/CodingDays/Dashboard/
+```
+dann Modul aktivieren
 
 ### How to use
 
@@ -45,6 +55,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
         )
     }
 
+## Umsätze
+```
+query {
+    revenue (
+        from: "2021-04-01",
+        to: "2021-04-31"
+    ) {
+        min
+        avg
+        max
+        total
+        paid
+        unpaid
+    }
+}
+```
+Ohne Filter = ohne Eingrenzung
 
 ## Testing
 
