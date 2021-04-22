@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
@@ -17,14 +17,20 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 final class Revenue
 {
     /** @var QueryBuilderFactoryInterface */
-    private $qbfi;
-    private $dateFilter;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
+    private ?DateFilter                  $dateFilter;
 
+    /**
+     * Revenue constructor.
+     *
+     * @param QueryBuilderFactoryInterface $queryBuilderFactory
+     * @param DateFilter|null $dateFilter
+     */
     public function __construct(
-        QueryBuilderFactoryInterface $qbfi,
+        QueryBuilderFactoryInterface $queryBuilderFactory,
         ?DateFilter $dateFilter = null
     ) {
-        $this->qbfi = $qbfi;
+        $this->queryBuilderFactory = $queryBuilderFactory;
         $this->dateFilter = $dateFilter;
     }
 
@@ -32,16 +38,20 @@ final class Revenue
      * min order value
      *
      * @Field
+     * @throws Exception
      */
     public function min(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("MIN(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
@@ -52,16 +62,20 @@ final class Revenue
      * average order value
      *
      * @Field
+     * @throws Exception
      */
     public function avg(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("AVG(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
@@ -72,16 +86,20 @@ final class Revenue
      * max order value
      *
      * @Field
+     * @throws Exception
      */
     public function max(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("MAX(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
@@ -94,13 +112,16 @@ final class Revenue
      */
     public function total(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
@@ -110,17 +131,21 @@ final class Revenue
     /**
      * total paid revenue
      * @Field
+     * @throws Exception
      */
     public function paid(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
             ->andWhere("oxpaid != '0000-00-00 00:00:00'")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
@@ -129,18 +154,23 @@ final class Revenue
 
     /**
      * open items
+     *
      * @Field
+     * @throws Exception
      */
     public function unpaid(): string
     {
-        $qb = $this->qbfi->create();
+        $qb = $this->queryBuilderFactory->create();
         $qb->select("SUM(oxtotalordersum)")
             ->from("oxorder")
             ->where("oxshopid = :shopid")
             ->andWhere("oxpaid = '0000-00-00 00:00:00'")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId());
+            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
+        ;
 
-        if($this->dateFilter) $this->dateFilter->addToQuery($qb,"oxorderdate");
+        if ($this->dateFilter) {
+            $this->dateFilter->addToQuery($qb, "oxorderdate");
+        }
 
         $data = $qb->execute();
 
