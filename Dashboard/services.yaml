@@ -1,0 +1,14 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+
+    CodingDays\Dashboard\:
+        resource: 'src/*'
+        exclude: 'src/**/DataType'
+        public: true
+
+    CodingDays\Dashboard\Shared\Service\NamespaceMapper:
+        class: CodingDays\Dashboard\Shared\Service\NamespaceMapper
+        tags: ['graphql_namespace_mapper']
