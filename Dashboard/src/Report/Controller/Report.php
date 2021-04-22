@@ -41,4 +41,19 @@ final class Report
     {
         return $this->service->getReportCountByDateDiff($dateBetween);
     }
+
+    /**
+     * @Query()
+     * @Logged()
+     * @Right("SEE_REPORTS")
+     *
+     * @param int $days
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function reportCountLastDays(int $days): int
+    {
+        return $this->service->reportCountLastDays($days);
+    }
 }

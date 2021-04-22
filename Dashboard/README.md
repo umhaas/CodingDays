@@ -1,7 +1,3 @@
-# vt/g-q-lreports
-
-[![Build Status](https://img.shields.io/travis/com/vt/g-q-lreports/master.svg?style=for-the-badge&logo=travis)](https://travis-ci.com/vt/g-q-lreports) [![PHP Version](https://img.shields.io/packagist/php-v/vt/g-q-lreports.svg?style=for-the-badge)](https://github.com/vt/g-q-lreports) [![Stable Version](https://img.shields.io/packagist/v/vt/g-q-lreports.svg?style=for-the-badge&label=latest)](https://packagist.org/packages/vt/g-q-lreports)
-
 ## Usage
 
 This assumes you have the OXID eShop up and running and installed and activated the `oxid-esales/graphql-base` module.
@@ -25,12 +21,10 @@ $ ./vendor/bin/oe-console oe:module:install-configuration source/modules/CodingD
 ```
 dann Modul aktivieren
 
-### How to use
+## How to use
 
-OrderCount by Date Diff
-
-Query:
-    Authentication:
+### Bestellungen
+#####Authentication Query:
 
     query {
         token (
@@ -39,11 +33,12 @@ Query:
         )
     }
 
-Set Header from response
+##### Set Header from response - also the user has to be in oxidadmin user group
 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 
-
+##### Get Ordercount between from and to date
+##### Query:
     query {
         reportCountByDateDiff(
           dateBetween: {
@@ -54,6 +49,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
           }
         )
     }
+Will return integer
+
+##### Get Ordercount since x days
+##### Query:
+    query {
+        reportCountLastDays(
+          days: 20
+        )
+    }
+
+Will return integer
 
 ## Umsätze
 ```

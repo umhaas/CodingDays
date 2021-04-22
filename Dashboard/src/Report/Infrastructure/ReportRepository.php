@@ -39,4 +39,23 @@ final class ReportRepository
 
         return (int)$queryBuilder->execute()->fetchOne();
     }
+
+    /**
+     * @param int $day
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function reportCountLastDays(int $days): int
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->select('COUNT(*)')
+            ->from('oxorder')
+            ->where('oxorderdate >= DATE(NOW()) - INTERVAL :days DAY')
+            ->setParameter('days', $days)
+        ;
+
+        return (int)$queryBuilder->execute()->fetchOne();
+    }
 }

@@ -46,4 +46,15 @@ final class Report
     {
         return $this->reportRepository->getReportCountByDateDiff($dateBetween);
     }
+
+    /**
+     * @param int $days
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function reportCountLastDays(int $days): int
+    {
+        return $this->reportRepository->reportCountLastDays($days);
+    }
 }
