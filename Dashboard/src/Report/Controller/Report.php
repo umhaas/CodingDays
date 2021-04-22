@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\Controller;
 
-
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
 use CodingDays\Dashboard\Report\Service\Report as ReportService;
