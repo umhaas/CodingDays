@@ -17,6 +17,7 @@ final class NamespaceMapper implements NamespaceMapperInterface
     {
         return [
             '\\CodingDays\\Dashboard\\Report\\Controller' => __DIR__ . '/../../Report/Controller/',
+            '\\CodingDays\\Dashboard\\Revenue\\Controller' => __DIR__ . '/../../Revenue/Controller/',
         ];
     }
 
@@ -24,6 +25,7 @@ final class NamespaceMapper implements NamespaceMapperInterface
     {
         return [
             '\\CodingDays\\Dashboard\\Report\\DataType' => __DIR__ . '/../../Report/DataType/',
+            '\\CodingDays\\Dashboard\\Revenue\\DataType' => __DIR__ . '/../../Revenue/DataType/',
         ];
     }
 }
