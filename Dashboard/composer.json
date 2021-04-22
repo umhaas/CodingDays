@@ -1,6 +1,7 @@
 {
     "name": "coding-days/dashboard",
     "description": "",
+    "version": "1.0",
     "type": "oxideshop-module",
     "keywords": [
         "oxid",
