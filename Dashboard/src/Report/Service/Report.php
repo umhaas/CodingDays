@@ -57,4 +57,16 @@ final class Report
     {
         return $this->reportRepository->reportCountLastDays($days);
     }
+
+    /**
+     * @param DateFilter $dateBetween
+     * @param int        $limit
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getReportTopProductsByDateDiff(DateFilter $dateBetween, int $limit): array
+    {
+        return $this->reportRepository->getReportTopProductsByDateDiff($dateBetween, $limit);
+    }
 }
