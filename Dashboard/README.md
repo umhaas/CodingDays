@@ -61,6 +61,22 @@ Will return integer
 
 Will return integer
 
+##### Get best selling products between from and to date
+##### Query:
+    query {
+        getReportTopProductsByDateDiff(
+          dateBetween: {
+            between:[
+              "2021-04-10",
+              "2021-04-22 17:00:00"
+            ],
+            limit: 50
+          }
+        )
+    }
+
+Will return array of artnums and sold amount sorted descending
+
 ## Umsätze
 ```
 query {
