@@ -6,9 +6,6 @@ namespace CodingDays\Dashboard\Report\Service;
 
 use CodingDays\Dashboard\Report\Infrastructure\ReportRepository;
 use Doctrine\DBAL\Exception;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use CodingDays\Dashboard\Report\DataType\Report as ReportDataType;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 
 final class Report
@@ -26,25 +23,16 @@ final class Report
         $this->reportRepository = $reportRepository;
     }
 
-    public function report(?string $date): ReportDataType
-    {
-        $qbfi = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class)
-        ;
-
-        return new ReportDataType($qbfi);
-    }
-
     /**
      * @param DateFilter $dateBetween
+     * @param string $interval
      *
-     * @return int
+     * @return array
      * @throws Exception
      */
-    public function getReportCountByDateDiff(DateFilter $dateBetween): int
+    public function getReportCountByDateDiff(DateFilter $dateBetween, string $interval): array
     {
-        return $this->reportRepository->getReportCountByDateDiff($dateBetween);
+        return $this->reportRepository->getReportCountByDateDiff($dateBetween, $interval);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Report\Controller;
 
+use CodingDays\Dashboard\Report\DataType\Sales;
 use Doctrine\DBAL\Exception;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
@@ -33,13 +34,14 @@ final class Report
      * @Right("SEE_REPORTS")
      *
      * @param DateFilter $dateBetween
+     * @param string $interval
      *
-     * @return int
+     * @return Sales[]
      * @throws Exception
      */
-    public function reportCountByDateDiff(DateFilter $dateBetween): int
+    public function reportCountByDateDiff(DateFilter $dateBetween, string $interval): array
     {
-        return $this->service->getReportCountByDateDiff($dateBetween);
+        return $this->service->getReportCountByDateDiff($dateBetween, $interval);
     }
 
     /**

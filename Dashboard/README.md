@@ -38,18 +38,134 @@ dann Modul aktivieren
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 
 ##### Get Ordercount between from and to date
+##New:
+Added interval and fields for query
 ##### Query:
     query {
         reportCountByDateDiff(
           dateBetween: {
             between:[
-              "2021-04-10",
-              "2021-04-22 17:00:00"
+              "2010-04-10",
+              "2021-04-23"
+            ]
+          },
+            interval: "quarter"
+        ){
+        orderIdentifier,
+        orderInterval,
+        orderCount
+      }
+    }
+
+Will return array
+
+Possible interval:
+- day
+- week
+- month
+- year
+- quarter
+
+#### Return for interval
+- Day
+
+
+     {
+        "data": {
+            "reportCountByDateDiff": [
+                {
+                    "orderIdentifier": "2011-03-30",
+                    "orderInterval": "day",
+                    "orderCount": 1
+                },
+                {
+                "orderIdentifier": "2021-04-22",
+                "orderInterval": "day",
+                "orderCount": 1
+                }
+            ]
+        }
+    }
+
+- Week
+
+
+    {
+        "data": {
+            "reportCountByDateDiff": [
+                {
+                    "orderIdentifier": "13 2011",
+                    "orderInterval": "week",
+                    "orderCount": 1
+                },
+                {
+                    "orderIdentifier": "16 2021",
+                    "orderInterval": "week",
+                    "orderCount": 1
+                }
+            ]
+        }
+    }
+
+- month
+
+
+     {
+        "data": {
+        "reportCountByDateDiff": [
+            {
+                "orderIdentifier": "3 2011",
+                "orderInterval": "MONTH",
+                "orderCount": 1
+            },
+            {
+                "orderIdentifier": "4 2021",
+                "orderInterval": "MONTH",
+                "orderCount": 1
+            }
+          ]
+        }
+    }
+
+- year
+
+
+    {
+      "data": {
+      "reportCountByDateDiff":
+        [
+          {
+              "orderIdentifier": "2011",
+              "orderInterval": "year",
+              "orderCount": 1
+          },
+          {
+              "orderIdentifier": "2021",
+              "orderInterval": "year",
+              "orderCount": 1
+          }
+        ]
+      }
+    }
+
+- quarter
+
+      {
+          "data": {
+          "reportCountByDateDiff": [
+              {
+                  "orderIdentifier": "1 2011",
+                  "orderInterval": "quarter",
+                  "orderCount": 1
+              },
+              {
+                  "orderIdentifier": "2 2021",
+                  "orderInterval": "quarter",
+                  "orderCount": 1
+              }
             ]
           }
-        )
-    }
-Will return integer
+      }
 
 ##### Get Ordercount since x days
 ##### Query:
