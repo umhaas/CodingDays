@@ -58,4 +58,20 @@ final class Report
     {
         return $this->service->reportCountLastDays($days);
     }
+
+    /**
+     * @Query()
+     * @Logged()
+     * @Right("SEE_REPORTS")
+     *
+     * @param DateFilter $dateBetween
+     * @param int        $limit
+     *
+     * @return Report[]
+     * @throws Exception
+     */
+    public function reportTopProductsByDateDiff(DateFilter $dateBetween, int $limit = 50): array
+    {
+        return $this->service->getReportTopProductsByDateDiff($dateBetween, $limit);
+    }
 }
