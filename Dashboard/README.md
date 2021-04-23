@@ -193,7 +193,22 @@ query {
     }
 }
 ```
-Ohne Filter = ohne Eingrenzung
+Ohne Filter = heute
+
+### Tögliche Umsätze für einen Zeitinterval
+```
+query {
+    revenues (
+        from: "2021-04-01",
+        to: "2021-04-31"
+    ) {
+        date
+        paid
+        unpaid
+        total
+    }
+}
+```
 
 ## Testing
 

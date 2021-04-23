@@ -4,37 +4,49 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Revenue\Service;
 
-use GraphQL\Error\Error;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use CodingDays\Dashboard\Revenue\Infrastructure\RevenueRepository;
 use CodingDays\Dashboard\Revenue\DataType\Revenue as RevenueDataType;
-use OxidEsales\GraphQL\Base\DataType\DateFilter;
+use GraphQL\Error\Error;
+use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 
 final class Revenue
 {
-    /**
-     * Revenue constructor.
-     */
-    public function __construct() { }
+
+    private RevenueRepository $repository;
 
     /**
-     * @param string|null $from
-     * @param string|null $to
+     * Revenue constructor.
+     *
+     * @param RevenueRepository $repository
+     */
+    public function __construct(
+        RevenueRepository $repository
+    ) {
+        $this->repository = $repository;
+    }
+
+    /**
+     * @param ?string $from
+     * @param ?string $to
      *
      * @return RevenueDataType
      * @throws Error
      */
     public function revenue(?string $from, ?string $to): RevenueDataType
     {
-        $queryBuilderFactory = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(QueryBuilderFactoryInterface::class);
+        return $this->repository->revenue($from, $to);
+    }
 
-        $dateFilter = ($from || $to ? new DateFilter(null, [
-            date_create($from ?? date("Y-m-d")),
-            date_create($to ?? date("Y-m-d 23:59:59"))
-        ]) : null);
-
-        return new RevenueDataType($queryBuilderFactory, $dateFilter);
+    /**
+     * @param ?string $type
+     * @param ?string $from
+     * @param ?string $to
+     *
+     * @return RevenueDataType[]
+     * @throws Error
+     */
+    public function revenues(?string $type, ?string $from, ?string $to): array
+    {
+        return $this->repository->revenues($type, $from, $to);
     }
 }

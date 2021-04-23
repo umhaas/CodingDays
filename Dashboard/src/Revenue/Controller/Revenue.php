@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace CodingDays\Dashboard\Revenue\Controller;
 
-use CodingDays\Dashboard\Revenue\DataType\Revenue as RevenueDataType;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
+use TheCodingMachine\GraphQLite\Annotations\Right;
+use CodingDays\Dashboard\Revenue\DataType\Revenue as RevenueDataType;
 use CodingDays\Dashboard\Revenue\Service\Revenue as RevenueService;
 
 final class Revenue
@@ -26,6 +28,9 @@ final class Revenue
 
     /**
      * @Query()
+     * @Logged()
+     * @Right("SEE_REPORTS")
+     *
      * @param string|null $from
      * @param string|null $to
      *
@@ -34,5 +39,21 @@ final class Revenue
     public function revenue(?string $from = null, ?string $to = null): RevenueDataType
     {
         return $this->service->revenue($from, $to);
+    }
+
+    /**
+     * @Query()
+     * @Logged()
+     * @Right("SEE_REPORTS")
+     *
+     * @param ?string $type
+     * @param ?string $from
+     * @param ?string $to
+     *
+     * @return RevenueDataType[]
+     */
+    public function revenues(?string $type="daily", ?string $from = null, ?string $to = null): array
+    {
+        return $this->service->revenues($type, $from, $to);
     }
 }

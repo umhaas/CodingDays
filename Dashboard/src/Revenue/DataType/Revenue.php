@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace CodingDays\Dashboard\Revenue\DataType;
 
 use Doctrine\DBAL\Exception;
-use OxidEsales\Eshop\Core\Registry as EshopRegistry;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
@@ -16,94 +13,73 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class Revenue
 {
-    /** @var QueryBuilderFactoryInterface */
-    private QueryBuilderFactoryInterface $queryBuilderFactory;
-    private ?DateFilter                  $dateFilter;
+    private string $from;
+    private string $to;
+    private array $orders;
 
     /**
      * Revenue constructor.
      *
-     * @param QueryBuilderFactoryInterface $queryBuilderFactory
-     * @param DateFilter|null $dateFilter
+     * @param array $orders
      */
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory,
-        ?DateFilter $dateFilter = null
+        string $from,
+        string $to,
+        array $orders
     ) {
-        $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->dateFilter = $dateFilter;
+        $this->from = $from;
+        $this->to = $to;
+        $this->orders = $orders;
+    }
+
+    /**
+     * revenue date
+     *
+     * @Field
+     */
+    public function date(): string
+    {
+        return (substr($this->from, 0, 10) ==  substr($this->to, 0, 10) ? $this->from : $this->from . " - " . $this->to);
     }
 
     /**
      * min order value
      *
      * @Field
-     * @throws Exception
      */
     public function min(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("MIN(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne();
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0";
+        });
+        return min(array_column($data,"OXTOTALORDERSUM")) ?? "0";
     }
 
     /**
      * average order value
      *
      * @Field
-     * @throws Exception
      */
     public function avg(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("AVG(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne();
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0";
+        });
+        $values = array_column($data,"OXTOTALORDERSUM");
+        return (string) (array_sum($values)/count($values)) ?? "0";
     }
 
     /**
      * max order value
      *
      * @Field
-     * @throws Exception
      */
     public function max(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("MAX(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne();
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0";
+        });
+        return max(array_column($data,"OXTOTALORDERSUM")) ?? "0";
     }
 
     /**
@@ -112,68 +88,47 @@ final class Revenue
      */
     public function total(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("SUM(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne() ?? "0";
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0";
+        });
+        return (string) (array_sum(array_column($data,"OXTOTALORDERSUM"))) ?? "0";
     }
 
     /**
      * total paid revenue
      * @Field
-     * @throws Exception
      */
     public function paid(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("SUM(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->andWhere("oxpaid != '0000-00-00 00:00:00'")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
-
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne() ?? "0";
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0" && $order["OXPAID"] !== "0000-00-00 00:00:00";
+        });
+        return (string) (array_sum(array_column($data,"OXTOTALORDERSUM"))) ?? "0";
     }
 
     /**
      * open items
      *
      * @Field
-     * @throws Exception
      */
     public function unpaid(): string
     {
-        $qb = $this->queryBuilderFactory->create();
-        $qb->select("SUM(oxtotalordersum)")
-            ->from("oxorder")
-            ->where("oxshopid = :shopid")
-            ->andWhere("oxpaid = '0000-00-00 00:00:00'")
-            ->setParameter("shopid", EshopRegistry::getConfig()->getShopId())
-        ;
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "0" && $order["OXPAID"] === "0000-00-00 00:00:00";
+        });
+        return (string) (array_sum(array_column($data,"OXTOTALORDERSUM"))) ?? "0";
+    }
 
-        if ($this->dateFilter) {
-            $this->dateFilter->addToQuery($qb, "oxorderdate");
-        }
-
-        $data = $qb->execute();
-
-        return $data->fetchOne() ?? "0";
+    /**
+     * canceled order sum
+     *
+     * @Field
+     */
+    public function canceledtotal(): string
+    {
+        $data = array_filter($this->orders,function($order) {
+            return $order["OXSTORNO"] === "1";
+        });
+        return (string) (array_sum(array_column($data,"OXTOTALORDERSUM"))) ?? "0";
     }
 }
